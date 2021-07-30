@@ -59,8 +59,12 @@ def main():
         try:
             new_homework = get_homeworks(current_timestamp)
             if new_homework.get('homeworks'):
-                send_message(parse_homework_status(new_homework.get('homeworks')[0]))
-            current_timestamp = new_homework.get('current_date', current_timestamp)
+                send_message(
+                    parse_homework_status(new_homework.get('homeworks')[0])
+                )
+            current_timestamp = new_homework.get(
+                'current_date', current_timestamp
+            )
             time.sleep(5 * 60)  # Опрашивать раз в пять минут
 
         except Exception as e:
@@ -76,5 +80,9 @@ if __name__ == '__main__':
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-handler = RotatingFileHandler('my_logger.log', maxBytes=50000000, backupCount=5)
+handler = RotatingFileHandler(
+    'my_logger.log',
+    maxBytes=50000000,
+    backupCount=5
+)
 logger.addHandler(handler)
