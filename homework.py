@@ -5,8 +5,8 @@ import requests
 import telegram
 
 from dotenv import load_dotenv
-# from logging.handlers import RotatingFileHandler
-# from telegram.ext import Updater
+from logging.handlers import RotatingFileHandler
+
 
 load_dotenv()
 
@@ -70,19 +70,19 @@ def main():
         except Exception as e:
             print(f'Бот упал с ошибкой: {e}')
             time.sleep(5)
-            # site_error = f'Ошибка на API - json():{e}.'
-            # logging.error(site_error)
-            # return bot.send_message(site_error)
+            site_error = f'Ошибка на API - json():{e}.'
+            logging.error(site_error)
+            return bot.send_message(site_error)
 
 
 if __name__ == '__main__':
     main()
 
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.INFO)
-# handler = RotatingFileHandler(
-#     'my_logger.log',
-#     maxBytes=50000000,
-#     backupCount=5
-# )
-# logger.addHandler(handler)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler(
+    'my_logger.log',
+    maxBytes=50000000,
+    backupCount=5
+)
+logger.addHandler(handler)
