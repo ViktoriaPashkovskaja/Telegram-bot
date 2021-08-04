@@ -1,5 +1,5 @@
 certifi==2020.4.5.1
-cffi==1.14.0
+cffi
 chardet==3.0.4
 cryptography==2.9.2
 decorator==4.4.2
@@ -14,3 +14,5 @@ requests==2.23.0
 six==1.15.0
 tornado==6.1
 urllib3==1.25.9
+
+telegram~=0.0.1
