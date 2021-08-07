@@ -15,21 +15,41 @@ TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 bot = telegram.Bot(token=TELEGRAM_TOKEN)
 url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
-# updater = Updater(TELEGRAM_TOKEN, use_context=True)
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    filename='program.log',
+    format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
+)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = RotatingFileHandler(
+    'my_logger.log',
+    maxBytes=50000000,
+    backupCount=5
+)
+logger.addHandler(handler)
 
 
 def parse_homework_status(homework):
     if homework is None:
         error = 'Данных нет'
         logging.error(error)
-        send_message(error)
+        return error
     else:
         homework_name = homework.get('homework_name')
+        if homework_name is None:
+            error = 'Данных нет'
+            logging.error(error)
+            return error
         status = homework.get('status')
-        if status == 'rejected':
-            verdict = 'К сожалению, в работе нашлись ошибки.'
-        else:
-            verdict = 'Ревьюеру всё понравилось, работа зачтена!'
+        status_homework = {
+            'reviewing': 'Работа в данный момент находится на ревью.',
+            'approved': 'Ревьюеру всё понравилось, работа зачтена!',
+            'rejected': 'К сожалению, в работе нашлись ошибки.'
+        }
+        verdict = status_homework[status]
         return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
@@ -41,9 +61,9 @@ def get_homeworks(current_timestamp):
         homework_statuses = requests.get(
             url, headers=headers, params=params)
         return homework_statuses.json()
-    except Exception as e:
-        print(f'Ошибка у бота {e}')
-        return dict()
+    except requests.exceptions.RequestException as e:
+        logging.exception(f'Бот упал с ошибкой: {e}')
+        bot.send_message(chat_id=CHAT_ID, text=logging.exception)
 
 
 def send_message(message):
@@ -53,19 +73,13 @@ def send_message(message):
 def main():
     current_timestamp = int(time.time())  # Начальное значение timestamp
 
-    logging.basicConfig(
-        level=logging.DEBUG,
-        filename='program.log',
-        format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
-    )
-
     while True:
         try:
             homeworks = get_homeworks(current_timestamp)
             homework = homeworks['homeworks'][0]
             status_message = parse_homework_status(homework)
             send_message(status_message)
-            time.sleep(5 * 60)  # Опрашивать раз в пять минут
+            time.sleep(5 * 60)
 
         except Exception as e:
             print(f'Бот упал с ошибкой: {e}')
@@ -77,12 +91,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = RotatingFileHandler(
-    'my_logger.log',
-    maxBytes=50000000,
-    backupCount=5
-)
-logger.addHandler(handler)
