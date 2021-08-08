@@ -37,20 +37,15 @@ def parse_homework_status(homework):
         error = 'Данных нет'
         logging.error(error)
         return error
-    else:
-        homework_name = homework.get('homework_name')
-        if homework_name is None:
-            error = 'Данных нет'
-            logging.error(error)
-            return error
-        status = homework.get('status')
-        status_homework = {
+    homework_name = homework.get('homework_name')
+    status = homework.get('status')
+    status_homework = {
             'reviewing': 'Работа в данный момент находится на ревью.',
             'approved': 'Ревьюеру всё понравилось, работа зачтена!',
             'rejected': 'К сожалению, в работе нашлись ошибки.'
         }
-        verdict = status_homework[status]
-        return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
+    verdict = status_homework[status]
+    return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
 
 
 def get_homeworks(current_timestamp):
