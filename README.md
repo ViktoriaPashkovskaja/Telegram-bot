@@ -7,7 +7,7 @@ Telegram-бот для взаимодеяствия с API сервиса Пра
 2. python-telegram-bot 12.7
 
 Установка
-1. Клонируйте репозиторий на локальную машину: git clone https://github.com/Viktrols/api_sp1_bot.git
+1. Клонируйте репозиторий на локальную машину: git clone https://github.com/ViktoriaPashkovskaja/api_sp1_bot.git
 2. Установите виртуальное окружение: python3 -m venv venv
 3. Активируйте виртуальное окружение: (Windows: source venv\scripts\activate; Linux/Mac: source venv/bin/activate)
 4. Установите зависимости: pip install -r requirements.txt
